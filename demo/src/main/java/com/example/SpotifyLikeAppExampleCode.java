@@ -83,15 +83,15 @@ public class SpotifyLikeAppExampleCode {
         Scanner scanner = new Scanner(System.in);
         String title = scanner.nextLine();
         String name;
-        String path;
       final String jsonFileName = "audio-library.json";
        final String filePath = basePath + jsonFileName;
        JSONArray jsonData = readJSONArrayFile(filePath);
         for (Integer i = 0; i < jsonData.size(); i++) {
         JSONObject obj = (JSONObject) jsonData.get(i);
         name = (String) obj.get("name");
-
-          if(title.equals(name)) {
+        name = name.toLowerCase();
+        title = title.toLowerCase();
+        if(name.contains(title)) {
             System.out.println("\nNow playing: " + name);
             final Integer songIndex = i;
             play(library, songIndex);
@@ -112,6 +112,7 @@ public class SpotifyLikeAppExampleCode {
         break;
       case "t":
         System.out.println("-->Stop playing<--");
+        stop();
         // if statement? if song is playing
 
       case "q":
@@ -167,6 +168,9 @@ public class SpotifyLikeAppExampleCode {
     }
   }
 
+  public static void stop() {
+    audioClip.close();
+  }
   //
   // Func: readJSONFile
   // Desc: Reads a json file storing an array and returns an object
