@@ -113,7 +113,7 @@ public class SpotifyLikeAppExampleCode {
       case "t":
         System.out.println("-->Stop playing<--");
         // if statement? if song is playing
-        
+
       case "q":
         System.out.println("-->Quit<--");
         break;
@@ -132,7 +132,9 @@ public class SpotifyLikeAppExampleCode {
     for (Integer i=0; i < library.size(); i++) {
       JSONObject obj = (JSONObject) library.get(i);
       String name = (String) obj.get("name");
-      System.out.println(name);
+      Integer num = i+1;
+      String line = "[" + num + "]" + " " + name;
+      System.out.println(line);
     }
   }
 
