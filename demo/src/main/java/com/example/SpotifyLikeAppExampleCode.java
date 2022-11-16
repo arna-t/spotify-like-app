@@ -1,7 +1,5 @@
 package com.example;
 
-import static javax.sound.sampled.AudioSystem.*;
-
 import java.io.*;
 import java.util.*;
 import javax.sound.sampled.*;
@@ -21,26 +19,8 @@ public class SpotifyLikeAppExampleCode {
   Long position;
   static Clip audioClip;
 
-  /*
-    *** IMPORTANT NOTE FOR ALL STUDENTS *******
-
-    This next line of code is a "path" that students will need to change in order to play music on their
-    computer.  The current path is for my laptop, not yours.
-    
-    If students who do not understand whre files are located on their computer or how paths work on their computer, 
-    should immediately complete the extra credit on "Folders and Directories" in the canvas modules.  
-    
-    Knowing how paths work is fundamental knowledge for using a computer as a technical person.
-
-    Students who do not know what a path are often not able complete this assignment succesfullly.  Please
-    do the extra credit if you are confused. :)  
-    
-    Thank you!  -Gabriel
-
-    */
-
   private static String basePath =
-    "C:/Users/jerom/Documents/GitHub/class-java/spotify-like-app/demo/src/main/java/com/example/";
+    "C:/Users/sjccuser/Documents/GitHub/test-office-hours/demo/src/main/java/com/example/";
 
   // "main" makes this class a java app that can be executed
   public static void main(final String[] args) {
@@ -76,7 +56,7 @@ public class SpotifyLikeAppExampleCode {
     System.out.println("[H]ome");
     System.out.println("[S]earch by title");
     System.out.println("[L]ibrary");
-    System.out.println("[P]lay");
+    System.out.println("[F]avorites");
     System.out.println("[Q]uit");
 
     System.out.println("");
@@ -86,6 +66,10 @@ public class SpotifyLikeAppExampleCode {
   /*
    * handles the user input for the app
    */
+  /**
+   * @param userInput
+   * @param library
+   */
   public static void handleMenu(String userInput, JSONArray library) {
     switch (userInput) {
       case "h":
@@ -93,13 +77,43 @@ public class SpotifyLikeAppExampleCode {
         break;
       case "s":
         System.out.println("-->Search by title<--");
+        System.out.println("Enter audio title: ");
+        Scanner scanner = new Scanner(System.in);
+        String title = scanner.nextLine();
+        String name;
+        String path;
+      final String jsonFileName = "audio-library.json";
+       final String filePath = basePath + jsonFileName;
+       JSONArray jsonData = readJSONArrayFile(filePath);
+        for (Integer i = 0; i < jsonData.size(); i++) {
+        JSONObject obj = (JSONObject) jsonData.get(i);
+        name = (String) obj.get("name");
+
+          if(title.equals(name)) {
+            System.out.println("\nNow playing: " + name);
+            final Integer songIndex = i;
+            play(library, songIndex);
+
+          }
+
+        }
+
         break;
       case "l":
-        System.out.println("-->Library<--");
+      System.out.println("-->Library<--");
+       
+        for (Integer i=0; i < library.size(); i++) {
+          JSONObject obj = (JSONObject) library.get(i);
+          name = (String) obj.get("name");
+          System.out.println(name);
+        }
+  
+
+        //System.out.println("1.")
+        //readAudioLibrary();
         break;
-      case "p":
-        System.out.println("-->Play<--");
-        play(library);
+      case "f":
+        System.out.println("-->Favorites<--");
         break;
       case "q":
         System.out.println("-->Quit<--");
@@ -112,13 +126,23 @@ public class SpotifyLikeAppExampleCode {
   /*
    * plays an audio file
    */
-  public static void play(JSONArray library) {
+  /**
+   * @param library
+   */
+  public static void printLibrary(JSONArray library, String name) {
+    for (Integer i=0; i < library.size(); i++) {
+      JSONObject obj = (JSONObject) library.get(i);
+      name = (String) obj.get("name");
+      System.out.println(name);
+    }
+  }
+
+  public static void play(JSONArray library, Integer songIndex) {
     // open the audio file
 
-    // get the filePath and open a audio file
-    final Integer songIndex = 3;
-    JSONObject obj = (JSONObject) library.get(songIndex);
-    final String filename = (String) obj.get("filename");
+    // get the filePath and open an audio file
+    final JSONObject obj = (JSONObject) library.get(songIndex);  
+    final String filename = (String) obj.get("filename"); 
     final String filePath = basePath + "/wav/" + filename;
     final File file = new File(filePath);
 
@@ -158,7 +182,7 @@ public class SpotifyLikeAppExampleCode {
       Object obj = jsonParser.parse(reader);
 
       dataArray = (JSONArray) obj;
-      // System.out.println(dataArray);
+      //System.out.println(dataArray);
 
     } catch (FileNotFoundException e) {
       e.printStackTrace();
@@ -174,9 +198,10 @@ public class SpotifyLikeAppExampleCode {
   // read the audio library of music
   public static JSONArray readAudioLibrary() {
     final String jsonFileName = "audio-library.json";
-    final String filePath = basePath + "/" + jsonFileName;
+    final String filePath = basePath + jsonFileName;
 
     JSONArray jsonData = readJSONArrayFile(filePath);
+    
 
     System.out.println("Reading the file " + filePath);
 
