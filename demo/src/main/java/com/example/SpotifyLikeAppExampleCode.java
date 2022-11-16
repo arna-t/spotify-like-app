@@ -18,6 +18,7 @@ public class SpotifyLikeAppExampleCode {
   String status;
   Long position;
   static Clip audioClip;
+  Boolean isFavourite;
 
   private static String basePath =
     "C:/Users/sjccuser/Documents/GitHub/test-office-hours/demo/src/main/java/com/example/";
@@ -57,6 +58,7 @@ public class SpotifyLikeAppExampleCode {
     System.out.println("[S]earch by title");
     System.out.println("[L]ibrary");
     System.out.println("[F]avorites");
+    System.out.println("S[t]op playing");
     System.out.println("[Q]uit");
 
     System.out.println("");
@@ -93,7 +95,6 @@ public class SpotifyLikeAppExampleCode {
             System.out.println("\nNow playing: " + name);
             final Integer songIndex = i;
             play(library, songIndex);
-
           }
 
         }
@@ -101,13 +102,7 @@ public class SpotifyLikeAppExampleCode {
         break;
       case "l":
       System.out.println("-->Library<--");
-       
-        for (Integer i=0; i < library.size(); i++) {
-          JSONObject obj = (JSONObject) library.get(i);
-          name = (String) obj.get("name");
-          System.out.println(name);
-        }
-  
+       printLibrary(library);
 
         //System.out.println("1.")
         //readAudioLibrary();
@@ -115,6 +110,10 @@ public class SpotifyLikeAppExampleCode {
       case "f":
         System.out.println("-->Favorites<--");
         break;
+      case "t":
+        System.out.println("-->Stop playing<--");
+        // if statement? if song is playing
+        
       case "q":
         System.out.println("-->Quit<--");
         break;
@@ -129,10 +128,10 @@ public class SpotifyLikeAppExampleCode {
   /**
    * @param library
    */
-  public static void printLibrary(JSONArray library, String name) {
+  public static void printLibrary(JSONArray library) {
     for (Integer i=0; i < library.size(); i++) {
       JSONObject obj = (JSONObject) library.get(i);
-      name = (String) obj.get("name");
+      String name = (String) obj.get("name");
       System.out.println(name);
     }
   }
