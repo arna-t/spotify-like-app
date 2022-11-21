@@ -57,8 +57,10 @@ public class SpotifyLikeAppExampleCode {
     System.out.println("[H]ome");
     System.out.println("[S]earch by title");
     System.out.println("[L]ibrary");
-    System.out.println("[F]avorites");
+    System.out.println("[P]ause");
+    System.out.println("[R]esume");
     System.out.println("S[t]op playing");
+    System.out.println("[F]avorites");
     System.out.println("[Q]uit");
 
     System.out.println("");
@@ -110,6 +112,17 @@ public class SpotifyLikeAppExampleCode {
       case "f":
         System.out.println("-->Favorites<--");
         break;
+      
+      case "p":
+        if (audioClip.isRunning()) {
+          System.out.println("-->Pause<--");
+          audioClip.stop();
+        }
+        else {
+          System.out.println("-->Resume<--");
+          audioClip.start();
+        }
+         break;
       case "t":
         System.out.println("-->Stop playing<--");
         stop();
