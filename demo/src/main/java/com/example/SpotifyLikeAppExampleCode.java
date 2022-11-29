@@ -18,7 +18,9 @@ public class SpotifyLikeAppExampleCode {
   String status;
   Long position;
   static Clip audioClip;
-  Boolean isFavourite;
+  Double seconds;
+  Boolean isFavorite = false;
+
 
   private static String basePath =
     "C:/Users/sjccuser/Documents/GitHub/test-office-hours/demo/src/main/java/com/example/";
@@ -27,6 +29,10 @@ public class SpotifyLikeAppExampleCode {
   public static void main(final String[] args) {
     // reading audio library from json file
     JSONArray library = readAudioLibrary();
+    final String jsonFileName = "audio-library.json";
+    final String filePath = basePath + jsonFileName;
+    JSONArray jsonData = readJSONArrayFile(filePath);
+    Boolean isFavorite = false;
 
     // create a scanner for user input
     Scanner input = new Scanner(System.in);
@@ -42,7 +48,7 @@ public class SpotifyLikeAppExampleCode {
       userInput = userInput.toLowerCase();
 
       // do something
-      handleMenu(userInput, library);
+      handleMenu(userInput, library, jsonData, isFavorite);
     }
 
     // close the scanner
@@ -60,6 +66,8 @@ public class SpotifyLikeAppExampleCode {
     System.out.println("[P]ause");
     System.out.println("[R]esume");
     System.out.println("S[t]op playing");
+    System.out.println("Re[w]ind 5 seconds");
+    System.out.println("F[o]rward 5 seconds");
     System.out.println("[F]avorites");
     System.out.println("[Q]uit");
 
@@ -74,7 +82,7 @@ public class SpotifyLikeAppExampleCode {
    * @param userInput
    * @param library
    */
-  public static void handleMenu(String userInput, JSONArray library) {
+  public static void handleMenu(String userInput, JSONArray library, JSONArray jsonData, boolean isFavorite) {
     switch (userInput) {
       case "h":
         System.out.println("-->Home<--");
@@ -85,9 +93,9 @@ public class SpotifyLikeAppExampleCode {
         Scanner scanner = new Scanner(System.in);
         String title = scanner.nextLine();
         String name;
-      final String jsonFileName = "audio-library.json";
+       final String jsonFileName = "audio-library.json";
        final String filePath = basePath + jsonFileName;
-       JSONArray jsonData = readJSONArrayFile(filePath);
+       //JSONArray jsonData = readJSONArrayFile(filePath);
         for (Integer i = 0; i < jsonData.size(); i++) {
         JSONObject obj = (JSONObject) jsonData.get(i);
         name = (String) obj.get("name");
@@ -97,8 +105,8 @@ public class SpotifyLikeAppExampleCode {
             System.out.println("\nNow playing: " + name);
             final Integer songIndex = i;
             play(library, songIndex);
+          // function to add to favorites
           }
-
         }
 
         break;
@@ -109,10 +117,7 @@ public class SpotifyLikeAppExampleCode {
         //System.out.println("1.")
         //readAudioLibrary();
         break;
-      case "f":
-        System.out.println("-->Favorites<--");
-        break;
-      
+
       case "p":
         if (audioClip.isRunning()) {
           System.out.println("-->Pause<--");
@@ -127,13 +132,32 @@ public class SpotifyLikeAppExampleCode {
         System.out.println("-->Stop playing<--");
         stop();
         // if statement? if song is playing
+      case "f":
+        System.out.println("-->Favorites<--");
+        favorite(jsonData, isFavorite);
+        break;
 
+      case "w":
+        System.out.println("-->Rewind<--");
+        audioClip.stop();
+        audioClip.setMicrosecondPosition(audioClip.getMicrosecondPosition() - 5000000);
+        audioClip.start();
+        break;
+
+      case "o":
+        System.out.println("-->Forward<--");
+        audioClip.stop();
+        audioClip.setMicrosecondPosition(audioClip.getMicrosecondPosition() + 5000000);
+        audioClip.start();
+        break;
+        
       case "q":
         System.out.println("-->Quit<--");
         break;
       default:
         break;
     }
+  
   }
 
   /*
@@ -213,16 +237,21 @@ public class SpotifyLikeAppExampleCode {
     return dataArray;
   }
 
+    public static void favorite(JSONArray jsonData, boolean isFavorite) {
+     // Boolean isFavorite = false;
+      for (Integer i = 0; i >= jsonData.size(); i++) {
+        JSONObject obj = (JSONObject) jsonData.get(i);
+        isFavorite = (Boolean) obj.get("isFavorite");
+        System.out.println("\nFavorite: "  + isFavorite);
+        }
+    }
+
   // read the audio library of music
   public static JSONArray readAudioLibrary() {
     final String jsonFileName = "audio-library.json";
     final String filePath = basePath + jsonFileName;
-
     JSONArray jsonData = readJSONArrayFile(filePath);
-    
-
     System.out.println("Reading the file " + filePath);
-
     return jsonData;
   }
 }
